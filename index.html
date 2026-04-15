@@ -270,6 +270,11 @@
     section { position: relative; }
     .section-pad { padding: 100px 24px; }
     .section-pad-alt { padding: 100px 24px; background: rgba(255,255,255,0.45); }
+    .wave-divider {
+      width: 100%; overflow: hidden; line-height: 0;
+      margin-top: -2px;
+    }
+    .wave-divider svg { display: block; width: 100%; }
     .section-inner { max-width: 1100px; margin: 0 auto; }
     .section-head { text-align: center; margin-bottom: 64px; }
     .section-icon {
@@ -288,6 +293,11 @@
       background-clip: text;
       color: transparent;
       margin-bottom: 16px;
+      clip-path: inset(0 100% 0 0);
+      transition: clip-path 0.95s cubic-bezier(.16,1,.3,1);
+    }
+    .section-title.ink-revealed {
+      clip-path: inset(0 0% 0 0);
     }
     .section-title::after {
       content: '';
@@ -610,6 +620,12 @@
       border-radius: 16px; cursor: pointer;
       box-shadow: 0 4px 20px rgba(0,0,0,0.08);
       border: 1px solid rgba(197,139,120,0.15);
+      transform-style: preserve-3d;
+      transition: transform 0.12s ease, box-shadow 0.3s ease;
+      will-change: transform;
+    }
+    .gallery-item.tilting {
+      box-shadow: 0 24px 60px rgba(0,0,0,0.22);
     }
     .gallery-item img {
       width: 100%; height: 200px; object-fit: cover; display: block;
@@ -651,6 +667,21 @@
       width: 150px; height: 150px;
       background: radial-gradient(circle at 20% 80%, rgba(243,227,201,0.06) 0%, transparent 60%);
       pointer-events: none;
+    }
+    .footer-stars {
+      position: absolute; inset: 0; pointer-events: none; overflow: hidden; z-index: 0;
+    }
+    .footer-star {
+      position: absolute;
+      background: rgba(243,227,201,0.7);
+      border-radius: 50%;
+      animation: starFloat linear infinite;
+    }
+    @keyframes starFloat {
+      0%   { transform: translateY(0) scale(1); opacity: 0; }
+      10%  { opacity: 1; }
+      90%  { opacity: 0.6; }
+      100% { transform: translateY(-100px) scale(0.4); opacity: 0; }
     }
     .footer-inner { position: relative; z-index: 1; }
     .footer-heart { width: 48px; height: 48px; margin: 0 auto 24px; animation: heartbeat 2s ease-in-out infinite; }
@@ -1269,8 +1300,6 @@
       .roulette-ball { width: 10px; height: 10px; top: 9%; }
       .roulette-ball.in-slot { top: 16%; }
     }
-
-    /* Schermi molto piccoli (iPhone SE 375x667): tutto l'hero deve entrare nel viewport */
     @media (max-width: 480px) and (max-height: 750px) {
       .hero-content { padding-top: 40px; padding-bottom: 72px; }
       .hero-badge { padding: 7px 16px; font-size: 0.7rem; margin-bottom: 12px; }
@@ -1300,6 +1329,18 @@
       width: 200px; height: 200px;
       background: radial-gradient(circle at 80% 20%, rgba(84,103,81,0.04) 0%, transparent 60%);
       pointer-events: none;
+    }
+
+    @keyframes confettiFall {
+      0%   { transform: translateY(0) rotate(0deg) scale(1); opacity: 1; }
+      100% { transform: translateY(80vh) rotate(720deg) scale(0.3); opacity: 0; }
+    }
+    @keyframes heartBurst {
+      0%   { transform: scale(0) rotate(-15deg); opacity: 0; }
+      30%  { transform: scale(1.4) rotate(5deg); opacity: 1; }
+      60%  { transform: scale(1.1) rotate(-2deg); opacity: 1; }
+      80%  { transform: scale(1.2) rotate(0); opacity: 1; }
+      100% { transform: scale(2) translateY(-60px); opacity: 0; }
     }
   </style>
 </head>
@@ -1558,6 +1599,11 @@
   </button>
 </section>
 
+<div class="wave-divider" aria-hidden="true">
+  <svg viewBox="0 0 1440 48" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+    <path d="M0,24 C360,48 1080,0 1440,24 L1440,48 L0,48 Z" fill="rgba(250,246,239,0.9)"/>
+  </svg>
+</div>
 <section id="couple" class="section-pad">
   <div class="section-inner">
     <div class="section-head reveal">
@@ -1598,6 +1644,11 @@ Ci vediamo il 5 settembre 2026 per brindare insieme e aggiungere una nuova, indi
 
 </div>
 
+<div class="wave-divider" aria-hidden="true">
+  <svg viewBox="0 0 1440 48" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+    <path d="M0,12 C480,48 960,0 1440,32 L1440,48 L0,48 Z" fill="rgba(255,255,255,0.45)"/>
+  </svg>
+</div>
 <section id="location" class="section-pad-alt">
   <div class="section-inner">
     <div class="section-head reveal">
@@ -1671,6 +1722,11 @@ Ci vediamo il 5 settembre 2026 per brindare insieme e aggiungere una nuova, indi
 
 </div>
 
+<div class="wave-divider" aria-hidden="true">
+  <svg viewBox="0 0 1440 48" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+    <path d="M0,32 C360,0 1080,48 1440,16 L1440,48 L0,48 Z" fill="rgba(250,246,239,0.9)"/>
+  </svg>
+</div>
 <section id="timeline" class="section-pad">
   <div class="section-inner">
     <div class="section-head reveal">
@@ -1997,6 +2053,7 @@ Ci vediamo il 5 settembre 2026 per brindare insieme e aggiungere una nuova, indi
 </section>
 
 <footer>
+  <div class="footer-stars" id="footerStars"></div>
   <div class="footer-inner">
     <div class="footer-heart">
       <svg viewBox="0 0 24 24" fill="white" width="48" height="48"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
@@ -2261,5 +2318,194 @@ Ci vediamo il 5 settembre 2026 per brindare insieme e aggiungere una nuova, indi
   })();
 </script>
 
+
+<script>
+/* ===== MIGLIORIE ESTETICHE ===== */
+
+/* 1. INK REVEAL sui titoli di sezione */
+(function() {
+  var titles = document.querySelectorAll('.section-title');
+  var io = new IntersectionObserver(function(entries) {
+    entries.forEach(function(e) {
+      if (e.isIntersecting) {
+        e.target.classList.add('ink-revealed');
+        io.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.3 });
+  titles.forEach(function(t) { io.observe(t); });
+})();
+
+/* 2. 3D TILT sulle gallery card */
+(function() {
+  var isMobile = window.matchMedia('(hover: none)').matches;
+  if (isMobile) return;
+  document.querySelectorAll('.gallery-item').forEach(function(card) {
+    card.addEventListener('mousemove', function(e) {
+      var r = card.getBoundingClientRect();
+      var x = (e.clientX - r.left) / r.width  - 0.5;
+      var y = (e.clientY - r.top)  / r.height - 0.5;
+      card.style.transform = 'perspective(600px) rotateY(' + (x * 14) + 'deg) rotateX(' + (-y * 14) + 'deg) scale(1.04)';
+      card.classList.add('tilting');
+    });
+    card.addEventListener('mouseleave', function() {
+      card.style.transform = '';
+      card.classList.remove('tilting');
+    });
+  });
+})();
+
+/* 3. PARALLAX sulle foto location */
+(function() {
+  var isMobile = window.matchMedia('(hover: none)').matches;
+  if (isMobile) return;
+  var imgs = document.querySelectorAll('.location-card-photo img');
+  function onScroll() {
+    imgs.forEach(function(img) {
+      var r = img.closest('.location-card-photo').getBoundingClientRect();
+      var center = r.top + r.height / 2;
+      var vh = window.innerHeight;
+      var pct = (center - vh / 2) / vh;
+      img.style.transform = 'translateY(' + (pct * 28) + 'px) scale(1.08)';
+    });
+  }
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+})();
+
+/* 4. FLIP ORARI nella timeline */
+(function() {
+  var times = document.querySelectorAll('.timeline-time');
+  var io = new IntersectionObserver(function(entries) {
+    entries.forEach(function(e) {
+      if (!e.isIntersecting) return;
+      var el = e.target;
+      var final = el.textContent.trim();
+      var parts = final.split(':');
+      if (parts.length < 2) return;
+      var hh = parseInt(parts[0], 10);
+      var mm = parseInt(parts[1], 10);
+      var total = hh * 60 + mm;
+      var start = total - 60;
+      var startT = null;
+      var dur = 900;
+      el.style.transition = 'none';
+      function tick(ts) {
+        if (!startT) startT = ts;
+        var p = Math.min((ts - startT) / dur, 1);
+        var ease = 1 - Math.pow(1 - p, 3);
+        var cur = Math.round(start + (total - start) * ease);
+        var ch = Math.floor(cur / 60);
+        var cm = cur % 60;
+        el.textContent = (ch < 10 ? '0' : '') + ch + ':' + (cm < 10 ? '0' : '') + cm;
+        if (p < 1) requestAnimationFrame(tick);
+        else el.textContent = final;
+      }
+      requestAnimationFrame(tick);
+      io.unobserve(el);
+    });
+  }, { threshold: 0.8 });
+  times.forEach(function(t) { io.observe(t); });
+})();
+
+/* 5. STELLE nel footer */
+(function() {
+  var container = document.getElementById('footerStars');
+  if (!container) return;
+  var colors = ['rgba(243,227,201,0.8)', 'rgba(197,139,120,0.7)', 'rgba(255,255,255,0.6)'];
+  for (var i = 0; i < 28; i++) {
+    (function(idx) {
+      var star = document.createElement('div');
+      star.className = 'footer-star';
+      var size = Math.random() * 4 + 2;
+      star.style.cssText = [
+        'width:' + size + 'px',
+        'height:' + size + 'px',
+        'left:' + (Math.random() * 100) + '%',
+        'top:' + (60 + Math.random() * 40) + '%',
+        'background:' + colors[idx % colors.length],
+        'animation-duration:' + (3 + Math.random() * 5) + 's',
+        'animation-delay:' + (Math.random() * 4) + 's'
+      ].join(';');
+      container.appendChild(star);
+    })(i);
+  }
+})();
+
+/* 6. ANIMAZIONE CUORE + CORIANDOLI al submit RSVP */
+(function() {
+  var origSubmit = window.handleSubmit;
+  if (!origSubmit) return;
+  window.handleSubmit = function(e) {
+    var result = origSubmit(e);
+    // lancia coriandoli
+    var colors = ['#BC6636','#832727','#546751','#F3E3C9','#B57B12','#C58B78'];
+    for (var i = 0; i < 60; i++) {
+      (function(idx) {
+        setTimeout(function() {
+          var el = document.createElement('div');
+          el.className = 'rsvp-confetti-piece';
+          el.style.cssText = [
+            'left:' + (20 + Math.random() * 60) + '%',
+            'top:' + (30 + Math.random() * 30) + '%',
+            'background:' + colors[idx % colors.length],
+            'animation-duration:' + (1.2 + Math.random() * 1.2) + 's',
+            'animation-delay:' + (Math.random() * 0.4) + 's',
+            'border-radius:' + (Math.random() > 0.5 ? '50%' : '2px'),
+            'width:' + (6 + Math.random() * 8) + 'px',
+            'height:' + (6 + Math.random() * 8) + 'px'
+          ].join(';');
+          document.body.appendChild(el);
+          setTimeout(function() { el.remove(); }, 2800);
+        }, idx * 18);
+      })(i);
+    }
+    // cuore centrale
+    var wrap = document.createElement('div');
+    wrap.className = 'rsvp-success-anim';
+    wrap.innerHTML = '<span class="rsvp-heart-burst">❤️</span>';
+    document.body.appendChild(wrap);
+    setTimeout(function() { wrap.remove(); }, 1400);
+    return result;
+  };
+})();
+
+</script>
+
+<script>
+/* ANIMAZIONE CUORE + CORIANDOLI al submit RSVP */
+document.addEventListener('DOMContentLoaded', function() {
+  var form = document.getElementById('rsvpForm');
+  if (!form) return;
+  form.addEventListener('submit', function() {
+    var colors = ['#BC6636','#832727','#546751','#F3E3C9','#B57B12','#C58B78'];
+    for (var i = 0; i < 60; i++) {
+      (function(idx) {
+        setTimeout(function() {
+          var el = document.createElement('div');
+          el.className = 'rsvp-confetti-piece';
+          el.style.cssText = [
+            'left:' + (20 + Math.random() * 60) + '%',
+            'top:' + (30 + Math.random() * 30) + '%',
+            'background:' + colors[idx % colors.length],
+            'animation-duration:' + (1.2 + Math.random() * 1.2) + 's',
+            'animation-delay:' + (Math.random() * 0.4) + 's',
+            'border-radius:' + (Math.random() > 0.5 ? '50%' : '2px'),
+            'width:' + (6 + Math.random() * 8) + 'px',
+            'height:' + (6 + Math.random() * 8) + 'px'
+          ].join(';');
+          document.body.appendChild(el);
+          setTimeout(function() { el.remove(); }, 2800);
+        }, idx * 18);
+      })(i);
+    }
+    var wrap = document.createElement('div');
+    wrap.className = 'rsvp-success-anim';
+    wrap.innerHTML = '<span class="rsvp-heart-burst">❤️</span>';
+    document.body.appendChild(wrap);
+    setTimeout(function() { wrap.remove(); }, 1400);
+  }, { passive: true });
+});
+</script>
 </body>
 </html>
